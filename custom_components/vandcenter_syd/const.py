@@ -9,4 +9,4 @@ CONF_TOKEN = "token"
 CONF_TOKEN_EXPIRES = "token_expires"
 
 API_BASE = "https://vandcenter.smartforsyning.dk/api"
-UPDATE_INTERVAL = timedelta(hours=6)  # Don't hammer their API
+UPDATE_INTERVAL = timedelta(hours=1)  # Don't hammer their API

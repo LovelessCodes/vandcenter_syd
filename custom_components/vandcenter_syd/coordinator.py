@@ -3,21 +3,21 @@
 import logging
 from datetime import datetime, timedelta, timezone
 
-from aiohttp import ClientResponseError
 import async_timeout
-from homeassistant.core import HomeAssistant
+from aiohttp import ClientResponseError
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import (
     API_BASE,
-    DOMAIN,
-    UPDATE_INTERVAL,
-    CONF_TOKEN,
-    CONF_TOKEN_EXPIRES,
     CONF_EMAIL,
     CONF_PASSWORD,
+    CONF_TOKEN,
+    CONF_TOKEN_EXPIRES,
+    DOMAIN,
+    UPDATE_INTERVAL,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -85,7 +85,7 @@ class VandCenterCoordinator(DataUpdateCoordinator):
 
     async def _fetch_data(self, headers) -> dict:
         """Actual data fetching logic."""
-        with async_timeout.timeout(30):
+        async with async_timeout.timeout(30):
             resp = await self.session.get(
                 f"{API_BASE}/Customer/details", headers=headers
             )
