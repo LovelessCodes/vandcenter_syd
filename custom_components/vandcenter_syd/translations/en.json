@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "VandCenter Syd",
-        "description": "Create an account at https://vandcenter.smartforsyning.dk and use your email and password to login.",
+        "description": "Create an account at over at {url} and use your email and password to login.",
         "data": {
           "email": "Email",
           "password": "Password"

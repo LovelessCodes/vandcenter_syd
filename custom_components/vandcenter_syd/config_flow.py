@@ -57,5 +57,6 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     vol.Required(CONF_PASSWORD): str,
                 }
             ),
+            description_placeholders={"url": "https://vandcenter.smartforsyning.dk"},
             errors=errors,
         )
