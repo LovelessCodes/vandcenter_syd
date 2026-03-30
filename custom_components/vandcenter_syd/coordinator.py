@@ -1,4 +1,5 @@
 """DataUpdateCoordinator for VandCenter Syd."""
+
 import logging
 from datetime import datetime, timedelta, timezone
 
@@ -9,9 +10,18 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .const import API_BASE, DOMAIN, UPDATE_INTERVAL, CONF_TOKEN, CONF_TOKEN_EXPIRES, CONF_EMAIL, CONF_PASSWORD
+from .const import (
+    API_BASE,
+    DOMAIN,
+    UPDATE_INTERVAL,
+    CONF_TOKEN,
+    CONF_TOKEN_EXPIRES,
+    CONF_EMAIL,
+    CONF_PASSWORD,
+)
 
 _LOGGER = logging.getLogger(__name__)
+
 
 class VandCenterCoordinator(DataUpdateCoordinator):
     """Coordinator to fetch data from VandCenter API."""
@@ -52,8 +62,8 @@ class VandCenterCoordinator(DataUpdateCoordinator):
                 json={
                     "MatchTag": None,
                     "Email": self.entry.data[CONF_EMAIL],
-                    "Password": self.entry.data[CONF_PASSWORD]
-                }
+                    "Password": self.entry.data[CONF_PASSWORD],
+                },
             )
             resp.raise_for_status()
             data = await resp.json()
@@ -64,8 +74,8 @@ class VandCenterCoordinator(DataUpdateCoordinator):
                 data={
                     **self.entry.data,
                     CONF_TOKEN: data["AuthToken"],
-                    CONF_TOKEN_EXPIRES: data["ExpiresIn"]
-                }
+                    CONF_TOKEN_EXPIRES: data["ExpiresIn"],
+                },
             )
             _LOGGER.debug("Token refreshed successfully")
 
@@ -125,7 +135,7 @@ class VandCenterCoordinator(DataUpdateCoordinator):
                     total_payload = {
                         "DeviceContainerIds": [device_id],
                         "QuantityTypes": ["WaterVolume"],
-                        "Size": 1
+                        "Size": 1,
                     }
 
                     try:
@@ -144,7 +154,9 @@ class VandCenterCoordinator(DataUpdateCoordinator):
                                 total_reading = readings[0].get("Value")
                                 reading_timestamp = readings[0].get("Timestamp")
                     except Exception as err:
-                        _LOGGER.warning("Failed to fetch total reading for %s: %s", device_id, err)
+                        _LOGGER.warning(
+                            "Failed to fetch total reading for %s: %s", device_id, err
+                        )
                         total_reading = None
                         reading_timestamp = None
 

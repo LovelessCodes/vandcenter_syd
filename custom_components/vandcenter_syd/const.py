@@ -1,4 +1,5 @@
 """Constants for the VandCenter Syd integration."""
+
 from datetime import timedelta
 
 DOMAIN = "vandcenter_syd"

@@ -1,4 +1,5 @@
 """Sensor platform for VandCenter Syd."""
+
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
@@ -9,6 +10,7 @@ from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN
+
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up sensors."""
@@ -31,6 +33,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         entities.append(highest_sensor)
 
     async_add_entities(entities)
+
 
 class VandCenterDailySensor(CoordinatorEntity, SensorEntity):
     """Sensor for yesterday's water usage (last complete day)."""
@@ -68,6 +71,7 @@ class VandCenterDailySensor(CoordinatorEntity, SensorEntity):
             return round(buckets[-2]["Value"], 3)
         return round(buckets[-1]["Value"], 3)
 
+
 class VandCenterHighestSensor(CoordinatorEntity, SensorEntity):
     _attr_state_class = SensorStateClass.TOTAL
     _attr_native_unit_of_measurement = UnitOfVolume.CUBIC_METERS
@@ -89,9 +93,10 @@ class VandCenterHighestSensor(CoordinatorEntity, SensorEntity):
 
     @property
     def native_value(self):
-      """Return cumulative usage (sum of all daily values)."""
-      data = self.coordinator.data.get(self.device_id, {})
-      return data.get("usage", {}).get("HighestUsageInPeriod")
+        """Return cumulative usage (sum of all daily values)."""
+        data = self.coordinator.data.get(self.device_id, {})
+        return data.get("usage", {}).get("HighestUsageInPeriod")
+
 
 class VandCenterTotalSensor(CoordinatorEntity, SensorEntity):
     """Sensor for total cumulative water meter reading."""
@@ -123,9 +128,8 @@ class VandCenterTotalSensor(CoordinatorEntity, SensorEntity):
     def extra_state_attributes(self):
         """Return timestamp of when reading was taken."""
         data = self.coordinator.data.get(self.device_id, {})
-        return {
-            "last_reading_timestamp": data.get("reading_timestamp")
-        }
+        return {"last_reading_timestamp": data.get("reading_timestamp")}
+
 
 class VandCenterStatsSensor(CoordinatorEntity, SensorEntity):
     """Sensor for average daily consumption."""

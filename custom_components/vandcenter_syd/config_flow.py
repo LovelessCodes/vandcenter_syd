@@ -1,9 +1,17 @@
 """Config flow for VandCenter Syd."""
+
 import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
-from .const import API_BASE, CONF_TOKEN, DOMAIN, CONF_EMAIL, CONF_PASSWORD, CONF_TOKEN_EXPIRES
+from .const import (
+    API_BASE,
+    CONF_TOKEN,
+    DOMAIN,
+    CONF_EMAIL,
+    CONF_PASSWORD,
+    CONF_TOKEN_EXPIRES,
+)
 
 
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -24,7 +32,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             try:
                 resp = await session.post(
                     f"{API_BASE}/Customer/login",
-                    json={"MatchTag": None, "Email": email, "Password": password}
+                    json={"MatchTag": None, "Email": email, "Password": password},
                 )
                 if resp.status == 200:
                     data = await resp.json()
@@ -34,8 +42,8 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                             CONF_EMAIL: email,
                             CONF_PASSWORD: password,
                             CONF_TOKEN: data["AuthToken"],
-                            CONF_TOKEN_EXPIRES: data["ExpiresIn"]
-                        }
+                            CONF_TOKEN_EXPIRES: data["ExpiresIn"],
+                        },
                     )
                 errors["base"] = "invalid_auth"
             except Exception:
@@ -43,9 +51,11 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         return self.async_show_form(
             step_id="user",
-            data_schema=vol.Schema({
-                vol.Required(CONF_EMAIL): str,
-                vol.Required(CONF_PASSWORD): str,
-            }),
+            data_schema=vol.Schema(
+                {
+                    vol.Required(CONF_EMAIL): str,
+                    vol.Required(CONF_PASSWORD): str,
+                }
+            ),
             errors=errors,
         )
