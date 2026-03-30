@@ -3,6 +3,8 @@
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg?style=for-the-badge)](https://github.com/hacs/integration)
 [![Home Assistant](https://img.shields.io/badge/home%20assistant-%3E%3D2026.3.4-blue.svg?style=for-the-badge)](https://www.home-assistant.io)
 
+[![Open Home Assistant Community Store](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=LovelessCodes&repository=vandcenter_syd&category=integration)
+
 Unofficial integration for **VandCenter Syd** water meters in Home Assistant. Monitor your household water consumption directly from the Smart Forsyning portal.
 
 > **Note:** This integration is for customers of [VandCenter Syd](https://www.vandcentersyd.dk/) (Denmark). If you're not a customer, this integration won't work for you.
