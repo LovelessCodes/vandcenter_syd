@@ -2,6 +2,7 @@
 import logging
 from datetime import datetime, timedelta, timezone
 
+from aiohttp import ClientResponseError
 import async_timeout
 from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
@@ -35,7 +36,7 @@ class VandCenterCoordinator(DataUpdateCoordinator):
 
         try:
             return await self._fetch_data(headers)
-        except aiohttp.ClientResponseError as err:
+        except ClientResponseError as err:
             if err.status == 401:
                 # Token expired, refresh and retry
                 await self._refresh_token()
