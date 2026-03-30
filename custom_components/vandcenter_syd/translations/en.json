@@ -1,0 +1,18 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "VandCenter Syd",
+        "description": "Create an account at https://vandcenter.smartforsyning.dk and use your email and password to login.",
+        "data": {
+          "email": "Email",
+          "password": "Password"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Invalid token. Please verify you copied the full token including any dots.",
+      "cannot_connect": "Cannot connect to VandCenter API. Check your internet connection."
+    }
+  }
+}
