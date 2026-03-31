@@ -18,7 +18,6 @@ from .const import (
     CONF_TOKEN,
     CONF_TOKEN_EXPIRES,
     DOMAIN,
-    UPDATE_INTERVAL,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -33,10 +32,14 @@ class VandCenterCoordinator(DataUpdateCoordinator):
             hass,
             _LOGGER,
             name=DOMAIN,
-            update_interval=UPDATE_INTERVAL,
+            update_interval=None,  # Disable automatic polling - we use time-based tracking
         )
         self.entry = entry
         self.session = async_get_clientsession(hass)
+
+    async def async_hourly_refresh(self, now: datetime | None = None) -> None:
+        """Refresh data at the start of each hour."""
+        await self.async_request_refresh()
 
     @property
     def token(self):
