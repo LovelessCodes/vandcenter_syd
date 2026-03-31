@@ -16,8 +16,12 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up sensors."""
     coordinator = hass.data[DOMAIN][config_entry.entry_id]
     entities = []
+    devices = coordinator.data.get("devices")
 
-    for device_id, data in coordinator.data.items():
+    if not devices:
+        return
+
+    for device_id, data in devices.items():
         device = data["device"]
         location = data["location"]
         loc_id = location["LocationId"]
@@ -31,6 +35,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         entities.append(daily_sensor)
         entities.append(stats_sensor)
         entities.append(highest_sensor)
+
+    entities.append(VandCenterPriceSensor(coordinator))
 
     async_add_entities(entities)
 
@@ -59,7 +65,10 @@ class VandCenterDailySensor(CoordinatorEntity, SensorEntity):
     @property
     def native_value(self):
         """Return yesterday's usage (most recent complete day)."""
-        data = self.coordinator.data.get(self.device_id, {})
+        devices = self.coordinator.data.get("devices")
+        if not devices:
+            return None
+        data = devices.get(self.device_id, {})
         buckets = data.get("usage", {}).get("Buckets", [])
 
         if not buckets:
@@ -94,7 +103,10 @@ class VandCenterHighestSensor(CoordinatorEntity, SensorEntity):
     @property
     def native_value(self):
         """Return cumulative usage (sum of all daily values)."""
-        data = self.coordinator.data.get(self.device_id, {})
+        devices = self.coordinator.data.get("devices")
+        if devices is None:
+            return None
+        data = devices.get(self.device_id, {})
         return data.get("usage", {}).get("HighestUsageInPeriod")
 
 
@@ -121,14 +133,38 @@ class VandCenterTotalSensor(CoordinatorEntity, SensorEntity):
     @property
     def native_value(self):
         """Return total cubic meters."""
-        data = self.coordinator.data.get(self.device_id, {})
+        devices = self.coordinator.data.get("devices")
+        if not devices:
+            return None
+        data = devices.get(self.device_id, {})
         return data.get("total_reading")
 
     @property
     def extra_state_attributes(self):
         """Return timestamp of when reading was taken."""
-        data = self.coordinator.data.get(self.device_id, {})
+        devices = self.coordinator.data.get("devices")
+        if not devices:
+            return None
+        data = devices.get(self.device_id, {})
         return {"last_reading_timestamp": data.get("reading_timestamp")}
+
+
+class VandCenterPriceSensor(CoordinatorEntity, SensorEntity):
+    """Sensor for price."""
+
+    _attr_device_class = SensorDeviceClass.MONETARY
+    _attr_native_unit_of_measurement = "DKK/m³"
+    _attr_state_class = SensorStateClass.TOTAL
+
+    def __init__(self, coordinator):
+        super().__init__(coordinator)
+        self._attr_unique_id = "vandcentersyd_current_price"
+        self._attr_name = "Vandcenter Syd Current Price"
+
+    @property
+    def native_value(self):
+        """Return the price."""
+        return self.coordinator.data.get("price")
 
 
 class VandCenterStatsSensor(CoordinatorEntity, SensorEntity):
@@ -147,5 +183,8 @@ class VandCenterStatsSensor(CoordinatorEntity, SensorEntity):
 
     @property
     def native_value(self):
-        data = self.coordinator.data.get(self.device_id, {})
+        devices = self.coordinator.data.get("devices")
+        if not devices:
+            return None
+        data = devices.get(self.device_id, {})
         return data.get("usage", {}).get("AverageDailyUsage")

@@ -1,6 +1,7 @@
 """DataUpdateCoordinator for VandCenter Syd."""
 
 import logging
+import re
 from datetime import datetime, timedelta, timezone
 
 import async_timeout
@@ -168,4 +169,19 @@ class VandCenterCoordinator(DataUpdateCoordinator):
                         "reading_timestamp": reading_timestamp,
                     }
 
-            return all_device_data
+            price = 0
+
+            try:
+                resp = await self.session.get("https://vandcenter.dk/pris-forbrug")
+                resp.raise_for_status()
+                text = await resp.text()
+                PRICE_REGEX = r">([0-9,]+)\s+.*?kr.\/m3"
+                m = re.search(PRICE_REGEX, text, re.S)
+                if m:
+                    price = float(m.group(1).replace(",", "."))
+                else:
+                    _LOGGER.warning("Failed to parse price from vandcenter.dk")
+            except Exception as err:
+                _LOGGER.warning("Failed to fetch price from vandcenter.dk: %s", err)
+
+            return {"devices": all_device_data, "price": price}
