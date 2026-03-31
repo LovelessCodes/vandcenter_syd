@@ -39,7 +39,9 @@ class VandCenterCoordinator(DataUpdateCoordinator):
 
     async def async_hourly_refresh(self, now: datetime | None = None) -> None:
         """Refresh data at the start of each hour."""
+        _LOGGER.info("Hourly refresh triggered at %s", now)
         await self.async_request_refresh()
+        _LOGGER.info("Hourly refresh completed")
 
     @property
     def token(self):
