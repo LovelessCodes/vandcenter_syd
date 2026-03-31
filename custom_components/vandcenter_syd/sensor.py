@@ -1,20 +1,25 @@
 """Sensor platform for VandCenter Syd."""
 
+from homeassistant.components.button import ButtonEntity
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
     SensorStateClass,
 )
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import UnitOfVolume
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN
 
 
-async def async_setup_entry(hass, config_entry, async_add_entities):
+async def async_setup_entry(
+    hass: HomeAssistant, config_entry: ConfigEntry, async_add_entities
+):
     """Set up sensors."""
-    coordinator = hass.data[DOMAIN][config_entry.entry_id]
+    coordinator = hass.data[DOMAIN][config_entry.entry_id]["coordinator"]
     entities = []
     devices = coordinator.data.get("devices")
 
@@ -37,8 +42,20 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         entities.append(highest_sensor)
 
     entities.append(VandCenterPriceSensor(coordinator))
+    entities.append(VandCenterRefreshButton(coordinator))
 
     async_add_entities(entities)
+
+
+class VandCenterRefreshButton(ButtonEntity):
+    def __init__(self, coordinator):
+        self.coordinator = coordinator
+        self._attr_name = "Vandcenter Syd Refresh"
+        self._attr_unique_id = "vandcenter_syd_refresh"
+        self._attr_icon = "mdi:refresh"
+
+    async def async_press(self) -> None:
+        await self.coordinator.async_request_refresh()
 
 
 class VandCenterDailySensor(CoordinatorEntity, SensorEntity):
