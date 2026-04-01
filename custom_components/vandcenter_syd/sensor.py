@@ -1,6 +1,5 @@
 """Sensor platform for VandCenter Syd."""
 
-from homeassistant.components.button import ButtonEntity
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
@@ -42,20 +41,8 @@ async def async_setup_entry(
         entities.append(highest_sensor)
 
     entities.append(VandCenterPriceSensor(coordinator))
-    entities.append(VandCenterRefreshButton(coordinator))
 
     async_add_entities(entities)
-
-
-class VandCenterRefreshButton(ButtonEntity):
-    def __init__(self, coordinator):
-        self.coordinator = coordinator
-        self._attr_name = "Vandcenter Syd Refresh"
-        self._attr_unique_id = "vandcenter_syd_refresh"
-        self._attr_icon = "mdi:refresh"
-
-    async def async_press(self) -> None:
-        await self.coordinator.async_request_refresh()
 
 
 class VandCenterDailySensor(CoordinatorEntity, SensorEntity):
