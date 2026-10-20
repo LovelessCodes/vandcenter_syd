@@ -8,11 +8,32 @@
           "email": "Email",
           "password": "Password"
         }
+      },
+      "reauth_confirm": {
+        "title": "Reauthenticate VandCenter Syd",
+        "description": "The password for {email} was rejected. Enter your current password.",
+        "data": {
+          "password": "Password"
+        }
       }
     },
     "error": {
-      "invalid_auth": "Invalid token. Please verify you copied the full token including any dots.",
+      "invalid_auth": "Invalid email or password.",
       "cannot_connect": "Cannot connect to VandCenter API. Check your internet connection."
+    },
+    "abort": {
+      "reauth_successful": "Reauthentication was successful."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "VandCenter Syd",
+        "description": "Fixed water price used for the hourly cost statistic. Leave empty to not track cost.",
+        "data": {
+          "price_per_m3": "Price per m³"
+        }
+      }
     }
   }
 }
